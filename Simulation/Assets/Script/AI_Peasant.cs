@@ -15,7 +15,42 @@ public class AI_Peasant : MonoBehaviour
         
     }
 
-    void CalculateAngle();
+    void CalculateAngle() //Will calculate the angle
+    {
+        Vector3 curF = this.transform.up; //character direction
+        Vector3 curD = ore.transform.position - this.transform.position; //Ore direction
+
+        float dotProduct = ((curF.x * curD.x) + (curF.y * curD.y));
+        float angle = Mathf.Acos(dotProduct /(curF.magnitude*curD.magnitude)); //This is the Angle  θ=cos^-1((v*w)/(||v||*||w||))
+
+        Debug.Log("Angle: " + angle * Mathf.Rad2Deg);
+        Debug.Log("Angle: " + Vector3.Angle(curF,curD));
+
+        Debug.DrawRay(this.transform.position, curF * 5, Color.blue, 2); //Debug to find the direction of the tank
+        Debug.DrawRay(this.transform.position, curD, Color.yellow, 2); //Debug to find the direction of the ore
+
+        
+        //int clockwise = 1;
+        //   if( Cross(curF,curD).z < 0)//This will test to see where the angle is and adjust the objects direction
+        //   {
+        //       clockwise = -1;
+        //   }
+        //this.transform.Rotate(0,0,angle * Mathf.Rad2Deg*clockwise);
+
+        float unityAngle = Vector3.SignedAngle(curF, curD, this.transform.forward); // unity angle
+        this.transform.Rotate(0,0,unityAngle); //this is the short and simple version
+
+
+    }
+
+    Vector3 Cross(Vector3 v, Vector3 w) //CrossProduct
+    {
+        float xMult = v.y * w.z - v.z * w.y; //Check the pattern, x doesn't cross the x coordinates
+        float yMult = v.z * w.x - v.x * w.z; //Check the pattern, y doesn't cross any y coordinates
+        float zMult = v.x * w.y - v.y * w.x; //Check the pattern, z doesn't cross the z coordinates
+        Vector3 crossProd = new Vector3(xMult, yMult, zMult);
+        return crossProd;
+    }
     
     void CalculateDistance()  //Will calculate distance from object
     {
@@ -49,6 +84,7 @@ public class AI_Peasant : MonoBehaviour
             CalculateDistance();
             CalculateAngle();
         }
-        
+        CalculateDistance();
+        CalculateAngle();
     }
 }
